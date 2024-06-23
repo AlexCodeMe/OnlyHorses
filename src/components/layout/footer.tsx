@@ -16,7 +16,7 @@ export default function Footer() {
 					</a>
 					. The source code is available on{" "}
 					<a
-						href='https://github.com/shadcn-ui/ui'
+						href='https://github.com/alexcodeme'
 						target='_blank'
 						rel='noreferrer'
 						className='font-medium underline underline-offset-4'
