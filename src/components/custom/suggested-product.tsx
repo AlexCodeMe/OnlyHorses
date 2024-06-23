@@ -5,18 +5,18 @@ import { centsToDollars, cn } from '@/lib/utils'
 import Link from 'next/link'
 import { buttonVariants } from '../ui/button'
 import ZoomedImage from './zoomed-image'
+import { Product } from '@prisma/client'
 
-export default function SuggestedProduct({ product }: { product: any }) {
-  return (
-    <Card className='flex flex-col'>
+export default function SuggestedProduct({ product }: { product: Product }) {
+	return (
+		<Card className='flex flex-col'>
 			<CardHeader className='px-2 flex flex-row items-center justify-between space-y-0 pb-0'>
-				<CardTitle className='text-sm font-medium'>
-					<p className='w-28 text-ellipsis overflow-hidden text-nowrap'>{product.name}</p>
+				<CardTitle className='text-sm font-medium flex-grow'>
+					<p className='w-24 pr-4 text-ellipsis overflow-hidden whitespace-nowrap'>{product.name}</p>
 				</CardTitle>
-
-				<div>
-					<DollarSign className='inline h-4 w-4 text-muted-foreground' />
-					<span className='text-sm'>{centsToDollars(product.price)}</span>
+				<div className='flex items-center'>
+					<DollarSign className='h-4 w-4 text-muted-foreground' />
+					<span className='text-sm pr-2'>{centsToDollars(product.price)}</span>
 				</div>
 			</CardHeader>
 			<CardContent className='flex flex-col flex-1 gap-2 p-2'>
@@ -28,5 +28,5 @@ export default function SuggestedProduct({ product }: { product: any }) {
 				</div>
 			</CardContent>
 		</Card>
-  )
+	)
 }

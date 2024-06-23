@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "./globals.css"
+import 'next-cloudinary/dist/cld-video-player.css'
 import { ThemeProvider } from "@/providers/theme-provider";
 import Footer from "@/components/layout/footer";
+import TanStackProvider from "@/providers/tanstack-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,17 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang='en' suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
           <div className='h-screen flex flex-col'>
             <div className='flex-1'>
-          {children}
-
+              <TanStackProvider>{children}</TanStackProvider>
             </div>
             <Footer />
           </div>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
