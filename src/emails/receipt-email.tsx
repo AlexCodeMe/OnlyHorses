@@ -50,14 +50,14 @@ export const ReceiptEmail = ({
 				<Hr style={global.hr} />
 				<Section style={message}>
 					<Img
-						// src={`${BASE_URL}/email-logo.png`}
-						src={"https://i.ibb.co/zRQ6qcJ/email-logo.png"}
+						src={`${BASE_URL}/email-logo.png`}
+						// src={"https://i.ibb.co/zRQ6qcJ/email-logo.png"}
 						width='120'
 						height='80'
 						alt='Nike'
 						style={{ margin: "auto" }}
 					/>
-					<Heading style={global.heading}>It's On Its Way.</Heading>
+					<Heading style={global.heading}>It&apos;s On Its Way.</Heading>
 
 					<Text style={{ ...global.text, marginTop: 24 }}>
 						Your order is on its way. Your payment has been processed and your items are being prepared for
@@ -104,7 +104,7 @@ export const ReceiptEmail = ({
 				<Section style={paddingY}>
 					<Row>
 						<Text style={{ ...footer.text, paddingTop: 30, paddingBottom: 30 }}>
-							Please contact us if you have any questions. (If you reply to this email, we won't be able
+							Please contact us if you have any questions. (If you reply to this email, we won&apos;t be able
 							to see it.)
 						</Text>
 					</Row>

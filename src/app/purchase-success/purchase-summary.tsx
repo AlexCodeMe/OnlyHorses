@@ -50,7 +50,7 @@ export default function PurchaseSummary() {
 				</h1>
 
 				<p className='text-center text-md mb-6'>
-					Your order is being processed and you will receive a confirmation email shortly. If you don't
+					Your order is being processed and you will receive a confirmation email shortly. If you don&apos;t
 					receive an email within 24 hours, please contact us with your order ID.
 				</p>
 

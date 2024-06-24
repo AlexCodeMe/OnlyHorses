@@ -46,7 +46,7 @@ const WelcomeEmail = ({
 						<Heading style={{ ...global.heading }}>Welcome to OnlyHorse!</Heading>
 						<Text style={global.text}>Hello {userName},</Text>
 						<Text style={global.text}>
-							We're really happy to see you on our platform. We hope you have a great experience and enjoy
+							We&apos;re really happy to see you on our platform. We hope you have a great experience and enjoy
 							all the features we offer.
 						</Text>
 						<Hr style={global.hr} />
