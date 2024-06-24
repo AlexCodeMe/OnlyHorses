@@ -17,17 +17,17 @@ export default function AuthCallbackPage() {
 
 	useEffect(() => {
 		// first version before the stripe integration
-		if (data?.success || data?.success === false) {
-			router.push("/")
-		}
-
-		// const stripeUrl = localStorage.getItem("stripeRedirectUrl")
-		// if (stripeUrl && user?.email && !checkingAuth) {
-		// 	localStorage.removeItem("stripeRedirectUrl")
-		// 	window.location.href = stripeUrl + "?prefilled_email=" + user.email
-		// } else if (!user && !checkingAuth) {
+		// if (data?.success || data?.success === false) {
 		// 	router.push("/")
 		// }
+
+		const stripeUrl = localStorage.getItem("stripeRedirectUrl")
+		if (stripeUrl && user?.email && !checkingAuth) {
+			localStorage.removeItem("stripeRedirectUrl")
+			window.location.href = stripeUrl + "?prefilled_email=" + user.email
+		} else if (!user && !checkingAuth) {
+			router.push("/")
+		}
 	}, [router, checkingAuth, user])
 
 	if (!checkingAuth && data?.success) {

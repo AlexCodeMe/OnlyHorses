@@ -7,15 +7,44 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/components/ui/use-toast'
 import { centsToDollars } from '@/lib/utils'
 import { Product } from '@prisma/client'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import { createCheckoutSessionAction } from './actions'
 
 export default function ProductCheckout({ product }: { product: Product }) {
     const [selectedSize, setSelectedSize] = useState<string | null>(null)
     const { toast } = useToast()
     const router = useRouter()
 
-    async function handleBuyProduct() {}
+	const { mutate: createCheckoutSession, isPending } = useMutation({
+		mutationKey: ["createCheckoutSession"],
+		mutationFn: createCheckoutSessionAction,
+		onSuccess: ({ url }) => {
+			if (url) router.push(url);
+			else throw new Error("Error creating checkout session.Please try again later");
+		},
+		onError: (error) => {
+			toast({
+				title: "Error",
+				description: error.message || "Something went wrong. Please try again later.",
+				variant: "destructive",
+			});
+		},
+	})
+
+    async function handleBuyProduct() {
+		if (!selectedSize) {
+			toast({
+				title: "Error",
+				description: "Please select a size",
+				variant: "destructive",
+			});
+			return;
+		}
+		// call our mutation
+		createCheckoutSession({ productId: product.id, size: selectedSize })
+	}
 
   return (
     <div className='flex flex-col md:flex-row gap-5'>
@@ -39,11 +68,11 @@ export default function ProductCheckout({ product }: { product: Product }) {
 
 				<Button
 					className='mt-5 text-white px-5 py-2 rounded-md'
-					// disabled={isPending}
+					disabled={isPending}
 					size={"sm"}
 					onClick={handleBuyProduct}
-				>Buy Now
-					{/* {isPending ? "Processing..." : "Buy Now"} */}
+				>
+					{isPending ? "Processing..." : "Buy Now"}
 				</Button>
 			</div>
 		</div>
