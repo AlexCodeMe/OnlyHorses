@@ -3,12 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { centsToDollars } from '@/lib/utils'
 import { DollarSign } from 'lucide-react'
 import React from 'react'
+import { getDashboardData } from '../actions'
 
 export default async function AnalyticsTab() {
-    const totalRevenue = 1000
-    const totalSales = 1500
-    const totalSubscriptions = 500
-
+    const { totalRevenue, totalSubscriptions, totalSales } = await getDashboardData()
+    
     return (
         <>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-5'>
@@ -52,25 +51,25 @@ export default async function AnalyticsTab() {
 }
 
 async function RecentSubscriptions() {
-    const recentSubscriptions = [
-        {
-            user: {
-                name: "John Doe",
-                email: "john@email.com",
-                image: "",
-            },
-            price: 10_00,
-        },
-        {
-            user: {
-                name: "Jane Doe",
-                email: "jane@email.com",
-            },
-            price: 20_00,
-        },
-    ];
+    // const recentSubscriptions = [
+    //     {
+    //         user: {
+    //             name: "John Doe",
+    //             email: "john@email.com",
+    //             image: "",
+    //         },
+    //         price: 10_00,
+    //     },
+    //     {
+    //         user: {
+    //             name: "Jane Doe",
+    //             email: "jane@email.com",
+    //         },
+    //         price: 20_00,
+    //     },
+    // ]
 
-    // const { recentSubscriptions } = await getDashboardData()
+    const { recentSubscriptions } = await getDashboardData()
     return (
         <Card className='flex-1'>
             <CardHeader className='px-3'>
@@ -100,30 +99,30 @@ async function RecentSubscriptions() {
                 ))}
             </CardContent>
         </Card>
-    );
+    )
 }
 
 async function RecentSales() {
-    const recentSales = [
-        {
-            user: {
-                name: "John Doe",
-                email: "john@email.com",
-                image: "",
-            },
-            price: 10_00,
-        },
-        {
-            user: {
-                name: "Jane Doe",
-                email: "jane@email.com",
-                image: "",
-            },
-            price: 20_00,
-        },
-    ];
+    // const recentSales = [
+    //     {
+    //         user: {
+    //             name: "John Doe",
+    //             email: "john@email.com",
+    //             image: "",
+    //         },
+    //         price: 10_00,
+    //     },
+    //     {
+    //         user: {
+    //             name: "Jane Doe",
+    //             email: "jane@email.com",
+    //             image: "",
+    //         },
+    //         price: 20_00,
+    //     },
+    // ]
 
-    // const { recentSales } = await getDashboardData();
+    const { recentSales } = await getDashboardData()
     return (
         <Card className='flex-1'>
             <CardHeader className='px-3'>
@@ -152,5 +151,5 @@ async function RecentSales() {
                 ))}
             </CardContent>
         </Card>
-    );
+    )
 }
