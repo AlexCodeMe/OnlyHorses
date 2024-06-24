@@ -50,8 +50,8 @@ export const ReceiptEmail = ({
 				<Hr style={global.hr} />
 				<Section style={message}>
 					<Img
-						src={`${BASE_URL}/email-logo.png`}
-						// src={"https://i.ibb.co/zRQ6qcJ/email-logo.png"}
+						// src={`${BASE_URL}/email-logo.png`}
+						src={"https://i.ibb.co/zRQ6qcJ/email-logo.png"}
 						width='120'
 						height='80'
 						alt='Nike'
@@ -68,8 +68,8 @@ export const ReceiptEmail = ({
 				<Section style={global.defaultPadding}>
 					<Text style={adressTitle}>Shipping to: {userName}</Text>
 					<Text style={{ ...global.text, fontSize: 14 }}>
-						{shippingAddress.city}, {shippingAddress.state} {shippingAddress.postalCode},{" "}
-						{shippingAddress.country}
+						{shippingAddress?.city}, {shippingAddress?.state} {shippingAddress?.postalCode},{" "}
+						{shippingAddress?.country}
 					</Text>
 				</Section>
 				<Hr style={global.hr} />
@@ -94,7 +94,7 @@ export const ReceiptEmail = ({
 						<Column style={{ paddingLeft: 10 }}>
 							<Text style={global.paragraphWithBold}>Order Date</Text>
 							<Text style={track.number}>
-								{orderDate.toLocaleDateString()} {orderDate.toLocaleTimeString()}
+								{orderDate?.toLocaleDateString()} {orderDate?.toLocaleTimeString()}
 							</Text>
 						</Column>
 					</Row>

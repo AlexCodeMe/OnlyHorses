@@ -1,42 +1,44 @@
 'use client'
 
-import ZoomedImage from "@/components/custom/zoomed-image";
-import UnderlinedText from "@/components/text-decorators/underlined-text";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { centsToDollars } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import { notFound, useSearchParams } from "next/navigation"
-import { checkProductPaidStatus } from "./actions";
+import ZoomedImage from '@/components/custom/zoomed-image'
+import UnderlinedText from '@/components/text-decorators/underlined-text'
+import { buttonVariants } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { centsToDollars } from '@/lib/utils'
+import { useQuery } from '@tanstack/react-query'
+import Link from 'next/link'
+import { notFound, useSearchParams } from 'next/navigation'
+import { checkProductPaidStatus } from './actions'
 
 const sizeMap: { [key: string]: string } = {
-	sm: "Small",
-	md: "Medium",
-	lg: "Large",
+	sm: 'Small',
+	md: 'Medium',
+	lg: 'Large',
 }
 
 export default function PurchaseSummary() {
-    const searchParams = useSearchParams();
-	const orderId = searchParams.get("orderId") || "";
+    const searchParams = useSearchParams()
+	const orderId = searchParams.get('orderId') || ''
 
 	const { data: order, isLoading } = useQuery({
-		queryKey: ["checkProductPaidStatus"],
+		queryKey: ['checkProductPaidStatus'],
 		queryFn: async () => await checkProductPaidStatus(orderId),
-	});
+	})
 
 	if (isLoading) {
 		return (
 			<div className='min-h-screen flex flex-col items-center justify-center p-6'>
-				<p className='text-center text-md mb-6'>Verifying your payment, please wait...</p>
+				<p className='text-center text-md mb-6'>
+					Verifying your payment, please wait...
+				</p>
 				<span className='animate-spin h-10 w-10 border-t-2 border-b-2 border-sky-400 rounded-full' />
 			</div>
-		);
+		)
 	}
 
-	if (order === false) return notFound();
+	if (order === false) return notFound()
 
-	if (!order) return null;
+	if (!order) return null
 
 	return (
 		<div className='min-h-screen flex flex-col items-center justify-center p-6'>
@@ -86,7 +88,7 @@ export default function PurchaseSummary() {
 				</p>
 
 				<div className='flex justify-center'>
-					<Link href={"/merch"} className={buttonVariants()}>
+					<Link href={'/merch'} className={buttonVariants()}>
 						Continue Shopping
 					</Link>
 				</div>

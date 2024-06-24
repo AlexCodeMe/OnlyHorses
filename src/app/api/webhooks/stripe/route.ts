@@ -1,26 +1,26 @@
-import prisma from "@/lib/db"
-import { stripe } from "@/lib/stripe"
-import { headers } from "next/headers"
-import { NextResponse } from "next/server"
-import Stripe from "stripe"
+import prisma from '@/lib/db'
+import { stripe } from '@/lib/stripe'
+import { headers } from 'next/headers'
+import { NextResponse } from 'next/server'
+import Stripe from 'stripe'
 
-import { Resend } from "resend"
-import WelcomeEmail from "@/emails/welcome-email"
-import ReceiptEmail from "@/emails/receipt-email"
+import { Resend } from 'resend'
+import WelcomeEmail from '@/emails/welcome-email'
+import ReceiptEmail from '@/emails/receipt-email'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const webhookSecret =
-	process.env.NODE_ENV === "development"
+	process.env.NODE_ENV === 'development'
 		? process.env.STRIPE_WEBHOOK_SECRET_DEV_KEY!
 		: process.env.STRIPE_WEBHOOK_SECRET_LIVE_KEY!
 
 export async function POST(req: Request) {
 	const body = await req.text()
-	const signature = headers().get("stripe-signature")
+	const signature = headers().get('stripe-signature')
 
 	if (!signature) {
-		return new Response("Invalid signature", { status: 400 })
+		return new Response('Invalid signature', { status: 400 })
 	}
 
 	let event
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 	try {
 		event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
 	} catch (err: any) {
-		console.error("Webhook signature verification failed.", err.message)
+		console.error('Webhook signature verification failed.', err.message)
 		return new Response(`Webhook Error: ${err.message}`, { status: 400 })
 	}
 
@@ -38,9 +38,9 @@ export async function POST(req: Request) {
 
 	try {
 		switch (eventType) {
-			case "checkout.session.completed": {
+			case 'checkout.session.completed': {
 				const session = await stripe.checkout.sessions.retrieve((data.object as Stripe.Checkout.Session).id, {
-					expand: ["line_items", "customer_details"],
+					expand: ['line_items', 'customer_details'],
 				})
 				const customerId = session.customer as string
 				const customerDetails = session.customer_details as Stripe.Checkout.Session.CustomerDetails
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 						where: { email: customerDetails.email },
 					})
 
-					if (!user) throw new Error("User not found")
+					if (!user) throw new Error('User not found')
 
 					// when we want to delete the user's subscription.
 					if (!user.customerId) {
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
 					for (const item of lineItems) {
 						const priceId = item.price?.id
-						const isSubscription = item.price?.type === "recurring"
+						const isSubscription = item.price?.type === 'recurring'
 
 						if (isSubscription) {
 							let endDate = new Date()
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
 							} else if (priceId === process.env.STRIPE_MONTHLY_PLAN_PRICE_ID) {
 								endDate.setMonth(endDate.getMonth() + 1) // +1 month from now
 							} else {
-								throw new Error("Invalid price id")
+								throw new Error('Invalid price id')
 							}
 
 							const subscription = await prisma.subscription.upsert({
@@ -97,12 +97,12 @@ export async function POST(req: Request) {
 								data: { isSubscribed: true },
 							})
 
-							if (process.env.NODE_ENV !== "production") {
+							if (process.env.NODE_ENV !== 'production') {
 								console.log('sending WelcomeEmail ...')
 								await resend.emails.send({
-									from: "OnlyHorses <onboarding@resend.dev>",
+									from: 'OnlyHorses <onboarding@resend.dev>',
 									to: [customerDetails.email],
-									subject: "Subscription Confirmation",
+									subject: 'Subscription Confirmation',
 									react: WelcomeEmail({
 										userEmail: customerDetails.email,
 										userName: user.name,
@@ -112,7 +112,6 @@ export async function POST(req: Request) {
 								})
 							}
 						} else {
-							// one time payment, for our t-shirts
 							const { orderId, size } = session.metadata as { orderId: string, size: string }
 
 							const shippingDetails = session.shipping_details?.address
@@ -124,11 +123,11 @@ export async function POST(req: Request) {
 									size,
 									shippingAddress: {
 										create: {
-											address: shippingDetails?.line1 ?? "",
-											city: shippingDetails?.city ?? "",
-											state: shippingDetails?.state ?? "",
-											postalCode: shippingDetails?.postal_code ?? "",
-											country: shippingDetails?.country ?? "",
+											address: shippingDetails?.line1 ?? '',
+											city: shippingDetails?.city ?? '',
+											state: shippingDetails?.state ?? '',
+											postalCode: shippingDetails?.postal_code ?? '',
+											country: shippingDetails?.country ?? '',
 										},
 									},
 								},
@@ -141,12 +140,12 @@ export async function POST(req: Request) {
 							})
 							// send a success email to the user
 
-							if (process.env.NODE_ENV !== "production") {
+							if (process.env.NODE_ENV !== 'production') {
 								console.log('sending ReceiptEmail ...')
 								await resend.emails.send({
-									from: "OnlyHorse <onboarding@resend.dev>",
+									from: 'OnlyHorse <onboarding@resend.dev>',
 									to: [customerDetails.email],
-									subject: "Order Confirmation",
+									subject: 'Order Confirmation',
 									react: ReceiptEmail({
 										orderDate: new Date(),
 										orderNumber: updatedOrder.id,
@@ -163,7 +162,7 @@ export async function POST(req: Request) {
 				}
 				break
 			}
-			case "customer.subscription.deleted": {
+			case 'customer.subscription.deleted': {
 				const subscription = await stripe.subscriptions.retrieve((data.object as Stripe.Subscription).id)
 				const user = await prisma.user.findUnique({
 					where: { customerId: subscription.customer as string },
@@ -174,13 +173,13 @@ export async function POST(req: Request) {
 						data: { isSubscribed: false },
 					})
 				} else {
-					console.error("User not found for the subscription deleted event.")
-					throw new Error("User not found for the subscription deleted event.")
+					console.error('User not found for the subscription deleted event.')
+					throw new Error('User not found for the subscription deleted event.')
 				}
 				break
 			}
 
-			case "checkout.session.expired": {
+			case 'checkout.session.expired': {
 				const session = await stripe.checkout.sessions.retrieve((data.object as Stripe.Checkout.Session).id)
 				await prisma.order.delete({
 					where: { id: session.metadata!.orderId },
