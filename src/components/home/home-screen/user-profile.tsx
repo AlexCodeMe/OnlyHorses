@@ -3,24 +3,17 @@ import CoverImage from './cover-image'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import prisma from '@/lib/db'
+import { getUserProfileAction } from '@/app/update-profile/actions'
 
-export default function UserProfile() {
-    const admin = {
-        id: 1,
-        name: "Admin",
-        email: "admin@gmail.com",
-        image: "https://avatar.iran.liara.run/public/girl?username=jane",
-    }
+export default async function UserProfile() {
+    const admin = await prisma.user.findUnique({
+		where: {
+			email: process.env.ADMIN_EMAIL!,
+		},
+	})
 
-    const currentUser = {
-        id: 123,
-        email: "user@gmail.com",
-        name: "John Doe",
-        image: "https://avatar.iran.liara.run/public/girl?username=alex",
-        isSubscribed: false,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-    }
+    const currentUser = await getUserProfileAction()
 
     return (
         <div className='flex flex-col'>

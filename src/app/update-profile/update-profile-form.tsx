@@ -15,8 +15,6 @@ import { getUserProfileAction, updateUserProfileAction } from './actions'
 export default function UpdateProfileForm() {
     const [mediaUrl, setMediaUrl] = useState('')
 	const [name, setName] = useState('')
-	const [email, setEmail] = useState('')
-	const [profileImage, setProfileImage] = useState('')
 
 	const { toast } = useToast()
 

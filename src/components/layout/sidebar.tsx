@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import LogoutButton from "../custom/logout-button";
+import { getUserProfileAction } from "@/app/update-profile/actions";
 
 const SIDEBAR_LINKS = [
     {
@@ -23,16 +24,7 @@ export default async function Sidebar() {
     const { getUser } = getKindeServerSession()
     const user = await getUser()
 
-    // const userProfile = await getUserProfileAction()
-    // const userProfile = {
-    //     id: 123,
-    //     email: "user@gmail.com",
-    //     name: "Alex Doe",
-    //     image: "https://avatar.iran.liara.run/public/girl?username=alex",
-    //     isSubscribed: false,
-    //     createdAt: Date.now(),
-    //     updatedAt: Date.now(),
-    // }
+    const userProfile = await getUserProfileAction()
 
     const isAdmin = process.env.ADMIN_EMAIL === user?.email
 
@@ -40,7 +32,9 @@ export default async function Sidebar() {
         <div className='flex lg:w-1/5 flex-col gap-3 px-2 border-r sticky left-0 top-0 h-screen'>
             <Link href='/update-profile' className='max-w-fit'>
                 <Avatar className='mt-4 cursor-pointer'>
-                    <AvatarImage src={user?.picture || "/user-placeholder.png"} className='object-cover' />
+                    <AvatarImage src={userProfile?.image || "/user-placeholder.png"}
+                        className='object-cover'
+                    />
                     <AvatarFallback>AM</AvatarFallback>
                 </Avatar>
             </Link>

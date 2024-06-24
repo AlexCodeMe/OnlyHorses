@@ -1,18 +1,29 @@
+'use client'
+
 import UnderlinedText from '@/components/text-decorators/underlined-text'
 import { Skeleton } from '@/components/ui/skeleton'
-import { posts } from '@/dummy_data'
 import React from 'react'
 import Post from './post'
+import { User } from '@prisma/client'
+import { useQuery } from '@tanstack/react-query'
+import { getPostsAction } from '@/actions/home-screen'
 
-export default function Posts({ isSubscribed, admin }: { isSubscribed: boolean, admin: any }) {
-    let isLoading = false
+export default function Posts({ isSubscribed, admin }: { isSubscribed: boolean, admin: User }) {
+	const { data: posts, isLoading } = useQuery({
+		queryKey: ["posts"],
+		queryFn: async () => await getPostsAction(),
+	})
 
-    console.log('posts', { posts })
-
-    return (
+	return (
 		<div>
 			{!isLoading &&
-				posts?.map((post) => <Post key={post.id} post={post} admin={admin} isSubscribed={isSubscribed} />)}
+				posts?.map((post) => (
+					<Post key={post.id}
+						post={post}
+						admin={admin}
+						isSubscribed={isSubscribed}
+					/>
+				))}
 
 			{isLoading && (
 				<div className='mt-10 px-3 flex flex-col gap-10'>
@@ -42,8 +53,8 @@ export default function Posts({ isSubscribed, admin }: { isSubscribed: boolean, 
 }
 
 function PostSkeleton() {
-    return (
-        <div className='w-full'>
+	return (
+		<div className='w-full'>
 			<div className='flex flex-col items-center space-y-3 w-full'>
 				<div className='flex flex-col gap-2 w-full'>
 					<Skeleton className='h-4 w-3/4' />
@@ -52,5 +63,5 @@ function PostSkeleton() {
 				<Skeleton className='h-[250px] w-full rounded-xl' />
 			</div>
 		</div>
-    )
+	)
 }

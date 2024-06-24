@@ -1,31 +1,40 @@
+import prisma from '@/lib/db'
 import { Heart, ImageIcon, Video } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-export default function CoverImage({ adminName }: { adminName: string }) {
-    const imageCount = 100
+export default async function CoverImage({ adminName }: { adminName: string }) {
+    const imageCount = await prisma.post.count({
+		where: {
+			mediaType: 'image',
+		},
+	})
 
-    const videoCount = 15
+    const videoCount = await prisma.post.count({
+		where: {
+			mediaType: 'video',
+		},
+	})
 
-    const totalLikes = {
-        _sum: {
-            likes: 1015
-        }
-    }
+    const totalLikes = await prisma.post.aggregate({
+		_sum: {
+			likes: true,
+		},
+	})
 
     function formatNumber(num: number) {
 		if (num >= 1000000) {
-			return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+			return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M'
 		}
 		if (num >= 1000) {
-			return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+			return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K'
 		}
-		return num.toString();
+		return num.toString()
 	}
 
   return (
     <div className='h-44 overflow-hidden relative'>
-			<Image src={"/featured/featured10.jpg"}
+			<Image src={'/featured/featured10.jpg'}
 				className='h-full w-full object-cover select-none pointer-events-none'
 				fill
 				alt='Horse Cover Image'
